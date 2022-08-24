@@ -138,7 +138,7 @@ def add_favorite(user_id):
     user = User.get_users_by_id(user_id)
     uid = request_body["uid"]
     element_id = uid[2:]
-    new_favorite = None
+    remove_favorite = None
 
     if uid.startswith("c"):
         remove_favorite = Favorite(user_id=user.id, character_id=element_id)
