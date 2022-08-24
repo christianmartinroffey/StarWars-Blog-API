@@ -18,6 +18,16 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+    
+    @classmethod
+    def get_all_users(cls):
+        users = cls.query.all()
+        return users
+
+    @classmethod
+    def get_users_by_id(cls, id):
+        users_by_id = cls.query.filter_by(id = id).one_or_none()
+        return users_by_id
 
 class Character(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,6 +58,16 @@ class Character(db.Model):
             "gender": self.gender,
             "uid": self.uid
         }
+
+    @classmethod
+    def get_all_characters(cls):
+        characters = cls.query.all()
+        return characters
+
+    @classmethod
+    def get_characters_by_id(cls, id):
+        characters_by_id = cls.query.filter_by(id = id).one_or_none()
+        return characters_by_id
 
 class Planet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -86,6 +106,16 @@ class Planet(db.Model):
             "name": self.name,
             "uid": self.uid
         }
+    
+    @classmethod
+    def get_all_planets(cls):
+        planets = cls.query.all()
+        return planets
+
+    @classmethod
+    def get_planet_by_id(cls, id):
+        planets_by_id = cls.query.filter_by(id = id).one_or_none()
+        return planets_by_id
 
 class Favorite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -103,3 +133,16 @@ class Favorite(db.Model):
             "character_id": self.character_id,
             "planet_id": self.planet_id
         }
+
+    @classmethod
+    def get_all_favorites(cls):
+        favorites = cls.query.all()
+        return favorites
+
+    @classmethod
+    def get_characters_by_id(cls, id):
+        favorites_by_id = cls.query.filter_by(id = id).one_or_none()
+        return favorites_by_id
+    
+
+    

@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Character, Planet, Favorite
 #from models import Person
 
 app = Flask(__name__)
@@ -33,31 +33,60 @@ def sitemap():
 @app.route('/user', methods=['GET'])
 def handle_hello():
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
+    users= User.get_all_users()
+    serialized_users = []
+    for user in users:
+        serialized_users.append(user.serialize())
+    return jsonify(serialized_users), 200
 
-    return jsonify(response_body), 200
+
+@app.route('/user/<int:user_id>', methods=['GET'])
+def handle_hello():
+
+    users= User.get_users_by_id(id)
+    return(jsonify(user.serialize()))
+
 
 @app.route('/people', methods=['GET'])
 def get_people():
 
-    characters = Character.query.all()
+    characters = Character.get_all_charactersl()
+    serialized_characters = []
+    for character in characters:
+        serialized_characters.append(character.serialize())
 
-    response_body = characters
-
-    return jsonify(response_body), 200
+    return(jsonify(serialized_planets))
+    
 
 @app.route('/people/<int:people_id>', methods=['GET'])
 def get_person(people_id):
     # people_id = 
 
-    character = Character.filter_by(uid = uid).one_or_none()
-    response_body = {
-        "msg": "All people "
-    }
+    character = Character.get_characters_by_id(people_id)
+    
+    return(jsonify(character.serialize())), 200
+
+@app.route('/planets', methods=['GET'])
+def get_planets():
+
+    planets = Planets.get_all_planets()
+    serialized_planets = []
+    for planet in planets:
+        serialized_planets.append(planet.serialize())
+
+    return(jsonify(serialized_planets))
+    response_body = characters
 
     return jsonify(response_body), 200
+
+@app.route('/planet/<int:planet_id>', methods=['GET'])
+def get_person(planet_id):
+    # people_id = 
+
+   planet = Planet.get_planet_by_id(planet_id)
+   return(jsonify(planet.serialize())), 200
+
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
