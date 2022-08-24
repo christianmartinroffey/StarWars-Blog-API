@@ -30,6 +30,7 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
+#user section
 @app.route('/user', methods=['GET'])
 def handle_hello():
 
@@ -46,7 +47,7 @@ def handle_hello():
     users= User.get_users_by_id(id)
     return(jsonify(user.serialize()))
 
-
+#people section
 @app.route('/people', methods=['GET'])
 def get_people():
 
@@ -65,6 +66,8 @@ def get_person(people_id):
     character = Character.get_characters_by_id(people_id)
     
     return(jsonify(character.serialize())), 200
+
+#planets section
 
 @app.route('/planets', methods=['GET'])
 def get_planets():
@@ -86,6 +89,68 @@ def get_person(planet_id):
    planet = Planet.get_planet_by_id(planet_id)
    return(jsonify(planet.serialize())), 200
 
+# favorites section
+@app.route('/favorites', methods=['GET'])
+def get_all_favorites():
+    
+    favorites = Favorites.get_all_favorites()
+    serialized_favorites = []
+    for favorite in favorites:
+        serialized_favorites.append(favorite.serialize())
+
+    return(jsonify(serialized_favorites))
+
+
+@app.route('/favorites/<int:id>', methods=['GET'])
+def get_favorites_by_id(id):
+    
+    favorite = Favorites.get_favorites_by_id(id)
+    
+    return(jsonify(favorite.serialize()))
+
+#fav post section
+@app.route('/favorites/<int:user_id>', methods=['POST']) 
+def add_favorite(user_id):
+    request_body = request.get_json(force=True)
+
+    user = User.get_users_by_id(user_id)
+    uid = request_body["uid"]
+    element_id = uid[2:]
+    new_favorite = None
+
+    if uid.startswith("c"):
+        new_favorite = Favorite(user_id=user.id, character_id=element_id)
+    else:
+        new_favorite = Favorite(user_id=user.id, planet_id=element_id)
+
+    db.session.add(new_favorite)
+    db.session.commit()
+    
+
+    return jsonify(new_favorite.serialize())
+
+#fav delete section
+
+@app.route('/favorites/<int:user_id>', methods=['DELETE']) 
+def add_favorite(user_id):
+    request_body = request.get_json(force=True)
+
+    user = User.get_users_by_id(user_id)
+    uid = request_body["uid"]
+    element_id = uid[2:]
+    new_favorite = None
+
+    if uid.startswith("c"):
+        remove_favorite = Favorite(user_id=user.id, character_id=element_id)
+    else:
+        remove_favorite = Favorite(user_id=user.id, planet_id=element_id)
+
+
+    db.session.delete(remove_favorite)
+    db.session.commit()
+    
+
+    return jsonify(remove_favorite.serialize())
 
 
 # this only runs if `$ python src/main.py` is executed

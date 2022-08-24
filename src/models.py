@@ -140,9 +140,11 @@ class Favorite(db.Model):
         return favorites
 
     @classmethod
-    def get_characters_by_id(cls, id):
+    def get_favorite_by_id(cls, id):
         favorites_by_id = cls.query.filter_by(id = id).one_or_none()
         return favorites_by_id
+    
+    
     
 
     
